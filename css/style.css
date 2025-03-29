@@ -18,14 +18,29 @@ header {
 }
 
 #app {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 20px;
-
+  display: grid;
+    grid-template-columns: repeat(5, 1fr); /* 5 columnas iguales */
+    grid-gap: 10px;
+    padding: 20px;
+}
+.pokemon-card {
+  text-align: center;
+  background-color: #f37021;
   padding: 20px;
 }
-
+.pokemon-card img {
+  background-color: #e69360;
+  width: 200px; /* Ancho de la imagen */
+  height: auto; /* Altura automática para mantener la proporción */
+  border-radius: 10px; /* Bordes redondeados */
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Sombra */
+}
+.favorite-btn {
+  background-color:#ec6969;
+  border-radius: 10px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+  font-weight: bold;
+}
 .pagination {
   display: flex;
   justify-content: center;
