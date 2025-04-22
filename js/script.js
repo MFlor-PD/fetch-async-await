@@ -1,5 +1,5 @@
 /* QUE TENGO QUE HACER O QUE TIENE QUE TENER LA PAGINA
-- `https://pokeapi.co/api/v2/pokemon`
+- `https://pokeapi.co/api/v2/pokemon`v
 - v Gestiona la paginación para mostrar diferentes conjuntos de Pokémon. De 10 en 10. añadir esto a la url más otras cosas puede limitar la cantidad `?limit=`
 - v Permite la búsqueda de Pokémon por nombre. Si no exite deberá aparecer un mensaje de "pokemon no encontrado"
 - v Maneja eventos de botones y actualiza dinámicamente la interfaz.
@@ -13,8 +13,9 @@
 // crear seccion de pokemones favoritos en pagina a parte (no tengo idea como)v
 // Puedes usar un script nuevo que solo traiga esos pokemon de favoritos(no se como relacionarlo pero ya vere).v
 
-
+*/
 const url = 'https://pokeapi.co/api/v2/pokemon?limit=10';
+const baseSearchURL = 'https://pokeapi.co/api/v2/pokemon';
 const displayPokemon = document.getElementById("app");
 const btnNext = document.getElementById("nextBtn");
 const btnPrev = document.getElementById("prevBtn");

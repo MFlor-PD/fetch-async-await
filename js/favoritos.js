@@ -21,9 +21,16 @@ function displayFavoritePokemons() {
                 <div>
                     <h2>${name}</h2>
                     <img src="${sprites.front_default}" alt="${name}">
+                    <button class="remove-btn" data-name="${name}">Eliminar de favoritos</button>
                 </div>
             `;
             favoritePokemonList.appendChild(li);
+
+            li.querySelector(".remove-btn").addEventListener("click", (e) => {
+                const name = e.target.dataset.name;
+                localStorage.removeItem(name);
+                li.remove(); // lo quita del DOM
+            });
         } catch (error) {
             console.error('Error:', error);
         }
