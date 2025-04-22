@@ -14,7 +14,7 @@
 // Puedes usar un script nuevo que solo traiga esos pokemon de favoritos(no se como relacionarlo pero ya vere).v
 
 */
-const url = 'https://pokeapi.co/api/v2/pokemon?limit=10';
+const baseListURL = 'https://pokeapi.co/api/v2/pokemon?limit=10';
 const baseSearchURL = 'https://pokeapi.co/api/v2/pokemon';
 const displayPokemon = document.getElementById("app");
 const btnNext = document.getElementById("nextBtn");
@@ -25,10 +25,10 @@ const resetBtn = document.getElementById("resetBtn");
 
 let currentPage = 1;
 let totalPokemons = 0;
-async function fetchPokemons(url, page = currentPage) {             //async function fetchPokemons(url, page = 1) { try { const limit = 10; const offset = (page - 1) * limit;
+async function fetchPokemons() {             //async function fetchPokemons(url, page = 1) { try { const limit = 10; const offset = (page - 1) * limit;
 try {
-    const offset = (page - 1) * 10;// este 10 es el limite establecido en la url
-    const response = await fetch(`${url}&offset=${offset}`); //agregar el offset a la URL
+    const offset = (currentPage - 1) * 10;// este 10 es el limite establecido en la url
+    const response = await fetch(`${baseListURL}&offset=${offset}`); //agregar el offset a la URL
     if(!response.ok) {
         throw new Error (`Error: ${response.status}`);
     }
@@ -79,9 +79,10 @@ catch(error) {
     console.error('Eror:', error);
 }
 }
+fetchPokemons();
 async function searchPokemon(pokemonName) {     //MENOS COMPLEJA PORQUE ACCEDE A LOS DATOS DE 1 POKEMON ESPECIFICO Y EN PARTICULAR.
     try {
-        const response = await fetch(`${url}/${pokemonName}`);
+        const response = await fetch(`${baseSearchURL}/${pokemonName}`);
         if (!response.ok) {
             throw new Error(`Error: ${response.status}`);
         }
@@ -101,7 +102,11 @@ async function searchPokemon(pokemonName) {     //MENOS COMPLEJA PORQUE ACCEDE A
 }
 //BOTONES Y EVENTOS
 searchBtn.addEventListener("click", () => {
-    const pokemonName = searchInput.value.toLowerCase();
+    const pokemonName = searchInput.value.trim().toLowerCase();
+    if (pokemonName === '') {
+        displayPokemon.innerHTML = 'Escriba un nombre válido';
+        return;
+    }
     searchPokemon(pokemonName);
 });
 searchInput.addEventListener("keydown", (event) => {
@@ -119,20 +124,20 @@ btnNext.addEventListener("click", () => {
     const maxPages = Math.ceil(totalPokemons / 10);
     if (currentPage < maxPages) {
         currentPage++;
-        fetchPokemons(url, currentPage);
+        fetchPokemons();
     }
 });
 
 btnPrev.addEventListener("click", () => {
     if (currentPage > 1) {
         currentPage--;
-        fetchPokemons(url, currentPage);
+        fetchPokemons();
     }
 });
 
 resetBtn.addEventListener("click", () => {
     searchInput.value = ''; // Borrar el texto del input
     displayPokemon.innerHTML = ''; // Borrar los resultados de la búsqueda
-    fetchPokemons(url, currentPage); // Volver a mostrar la lista de Pokémon
+    fetchPokemons(); // Volver a mostrar la lista de Pokémon
 });
-fetchPokemons(url, currentPage); // FUNCION MAS COMPLEJA PORQUE PIDE LISTADO DE POKEMONS
+fetchPokemons(currentPage); // FUNCION MAS COMPLEJA PORQUE PIDE LISTADO DE POKEMONS
