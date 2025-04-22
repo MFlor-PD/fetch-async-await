@@ -1,6 +1,7 @@
 const favoritePokemonList = document.getElementById("favorite-list");
 
-function displayFavoritePokemons() {
+async function displayFavoritePokemons() {
+    favoritePokemonList.innerHTML = ''; // Limpiar la lista antes de mostrar los favoritos
     const favoritePokemons = Object.keys(localStorage);
     if (favoritePokemons.length === 0) {
         favoritePokemonList.innerHTML = '<p>No hay Pokémon favoritos guardados.</p>';
@@ -36,5 +37,4 @@ function displayFavoritePokemons() {
         }
     });
 }
-
-displayFavoritePokemons();
+document.addEventListener("DOMContentLoaded", displayFavoritePokemons());

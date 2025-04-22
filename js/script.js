@@ -34,6 +34,7 @@ try {
     }
     const data = await response.json();
     totalPokemons = data.count;
+
     const pokemonData = await Promise.all(
      data.results.map(async({name, url}) => {
       const response2 = await fetch(url);
@@ -63,6 +64,7 @@ try {
             button.addEventListener("click", () => {
                 const pokemonName = button.dataset.name;
                 const isFavorite = localStorage.getItem(pokemonName);
+                console.log(`Guardando Pokémon: ${pokemonName}, Favorito: ${isFavorite ? 'Sí' : 'No'}`);
                 if (isFavorite) {
                     localStorage.removeItem(pokemonName);
                     button.classList.remove('favorited');
@@ -72,6 +74,7 @@ try {
                     button.classList.add('favorited');
                     button.textContent = 'Eliminar de favoritos';
                 }
+                displayFavoritePokemons();
             });
         });
 }    
@@ -140,4 +143,7 @@ resetBtn.addEventListener("click", () => {
     displayPokemon.innerHTML = ''; // Borrar los resultados de la búsqueda
     fetchPokemons(); // Volver a mostrar la lista de Pokémon
 });
-fetchPokemons(currentPage); // FUNCION MAS COMPLEJA PORQUE PIDE LISTADO DE POKEMONS
+
+
+
+
