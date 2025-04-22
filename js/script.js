@@ -25,85 +25,91 @@ const resetBtn = document.getElementById("resetBtn");
 
 let currentPage = 1;
 let totalPokemons = 0;
-async function fetchPokemons() {             //async function fetchPokemons(url, page = 1) { try { const limit = 10; const offset = (page - 1) * limit;
-try {
-    const offset = (currentPage - 1) * 10;// este 10 es el limite establecido en la url
-    const response = await fetch(`${baseListURL}&offset=${offset}`); //agregar el offset a la URL
-    if(!response.ok) {
-        throw new Error (`Error: ${response.status}`);
-    }
-    const data = await response.json();
-    totalPokemons = data.count;
 
-    const pokemonData = await Promise.all(
-     data.results.map(async({name, url}) => {
-      const response2 = await fetch(url);
-      const detailsPok = await response2.json();
-      return {
-        name,
-        imageUrl: detailsPok.sprites.front_default,  
-     };
-    })
-); 
-    let armadoHtml = '';
-    pokemonData.forEach(({name, imageUrl }) => {
-        const isFavorite = localStorage.getItem(name);
-        armadoHtml +=
-        `<div class="pokemon-card">
-        <div class="img"><img src=${imageUrl} alt=${name}/></div>
-        <div><h2 class="name">${name}</h2></div>
-        <div><button class="favorite-btn ${isFavorite ? 'favorited' : ''}" data-name="${name}">
-                                         ${isFavorite ? 'Eliminar de favoritos' : 'Añadir a favoritos'}
-                                                                                                       </button></div>
-        </div>`;
-    });
-    displayPokemon.innerHTML = armadoHtml;
-    // Agregar event listeners a los botones de favoritos
-    const favoriteButtons = document.querySelectorAll(".favorite-btn");
+async function fetchPokemons() {
+    try {
+        const offset = (currentPage - 1) * 10;
+        const response = await fetch(`${baseListURL}&offset=${offset}`);
+        if (!response.ok) {
+            throw new Error(`Error: ${response.status}`);
+        }
+        const data = await response.json();
+        totalPokemons = data.count;
+
+        const pokemonData = await Promise.all(
+            data.results.map(async ({ name, url }) => {
+                const response2 = await fetch(url);
+                const detailsPok = await response2.json();
+                return {
+                    name,
+                    imageUrl: detailsPok.sprites.front_default,
+                };
+            })
+        );
+
+        let armadoHtml = '';
+        pokemonData.forEach(({ name, imageUrl }) => {
+            const isFavorite = localStorage.getItem(`poke-fav-${name}`);
+            armadoHtml += `
+                <div class="pokemon-card">
+                    <div class="img"><img src="${imageUrl}" alt="${name}"/></div>
+                    <div><h2 class="name">${name}</h2></div>
+                    <div>
+                        <button class="favorite-btn ${isFavorite ? 'favorited' : ''}" data-name="${name}">
+                            ${isFavorite ? 'Eliminar de favoritos' : 'Añadir a favoritos'}
+                        </button>
+                    </div>
+                </div>`;
+        });
+
+        displayPokemon.innerHTML = armadoHtml;
+
+        // Event listeners para botones de favoritos
+        const favoriteButtons = document.querySelectorAll(".favorite-btn");
         favoriteButtons.forEach(button => {
             button.addEventListener("click", () => {
                 const pokemonName = button.dataset.name;
-                const isFavorite = localStorage.getItem(pokemonName);
-                console.log(`Guardando Pokémon: ${pokemonName}, Favorito: ${isFavorite ? 'Sí' : 'No'}`);
+                const isFavorite = localStorage.getItem(`poke-fav-${pokemonName}`);
                 if (isFavorite) {
-                    localStorage.removeItem(pokemonName);
+                    localStorage.removeItem(`poke-fav-${pokemonName}`);
                     button.classList.remove('favorited');
                     button.textContent = 'Añadir a favoritos';
                 } else {
-                    localStorage.setItem(pokemonName, 'true');
+                    localStorage.setItem(`poke-fav-${pokemonName}`, 'true');
                     button.classList.add('favorited');
                     button.textContent = 'Eliminar de favoritos';
                 }
-                displayFavoritePokemons();
             });
         });
-}    
-catch(error) {
-    console.error('Eror:', error);
-}
+
+    } catch (error) {
+        console.error('Error:', error);
+    }
 }
 fetchPokemons();
-async function searchPokemon(pokemonName) {     //MENOS COMPLEJA PORQUE ACCEDE A LOS DATOS DE 1 POKEMON ESPECIFICO Y EN PARTICULAR.
+
+async function searchPokemon(pokemonName) {
     try {
         const response = await fetch(`${baseSearchURL}/${pokemonName}`);
         if (!response.ok) {
             throw new Error(`Error: ${response.status}`);
         }
         const data = await response.json();
-        const { name, sprites/*, types, height, weight*/} = data;
-        //const pokemonTypes = types.map((type) => type.type.name).join(', ');
-    displayPokemon.innerHTML = `
-            <div>
-                <h2>${name}</h2>
-                <img src="${sprites.front_default}" alt="${name}">
+        const { name, sprites } = data;
+
+        displayPokemon.innerHTML = `
+            <div class="pokemon-card">
+                <div class="img"><img src="${sprites.front_default}" alt="${name}"/></div>
+                <div><h2 class="name">${name}</h2></div>
             </div>
-        `;                                                                      //<p>Tipos: ${pokemonTypes}</p> <p>Altura: ${height}</p> <p>Peso: ${weight}</p>
+        `;
     } catch (error) {
         console.error('Error:', error);
         displayPokemon.innerHTML = 'Pokémon no encontrado';
     }
 }
-//BOTONES Y EVENTOS
+
+// Event Listeners de navegación y búsqueda
 searchBtn.addEventListener("click", () => {
     const pokemonName = searchInput.value.trim().toLowerCase();
     if (pokemonName === '') {
@@ -112,18 +118,19 @@ searchBtn.addEventListener("click", () => {
     }
     searchPokemon(pokemonName);
 });
+
 searchInput.addEventListener("keydown", (event) => {
     if (event.key === "Enter") {
-        const pokemonName = searchInput.value.toLowerCase();
-        if (pokemonName.trim() === '') {
+        const pokemonName = searchInput.value.trim().toLowerCase();
+        if (pokemonName === '') {
             displayPokemon.innerHTML = 'Escriba un nombre válido';
             return;
         }
         searchPokemon(pokemonName);
     }
 });
+
 btnNext.addEventListener("click", () => {
-    // Calcular el número máximo de páginas
     const maxPages = Math.ceil(totalPokemons / 10);
     if (currentPage < maxPages) {
         currentPage++;
@@ -139,11 +146,7 @@ btnPrev.addEventListener("click", () => {
 });
 
 resetBtn.addEventListener("click", () => {
-    searchInput.value = ''; // Borrar el texto del input
-    displayPokemon.innerHTML = ''; // Borrar los resultados de la búsqueda
-    fetchPokemons(); // Volver a mostrar la lista de Pokémon
+    searchInput.value = '';
+    displayPokemon.innerHTML = '';
+    fetchPokemons();
 });
-
-
-
-
