@@ -17,17 +17,41 @@ header {
 
 }
 
+.controls-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 20px;
+  background-color: white;
+  margin: 20px;
+  border-radius: 10px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
 #app {
   display: grid;
     grid-template-columns: repeat(5, 1fr); /* 5 columnas iguales */
     grid-gap: 10px;
     padding: 20px;
 }
+
+.pokemon-container {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-gap: 10px;
+  padding: 20px;
+}
+
 .pokemon-card {
   text-align: center;
   background-color: #f37021;
   padding: 20px;
+  border-radius: 10px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
 }
+
 .pokemon-card img {
   background-color: #e69360;
   width: 200px; /* Ancho de la imagen */
@@ -35,12 +59,67 @@ header {
   border-radius: 10px; /* Bordes redondeados */
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3); /* Sombra */
 }
+
 .favorite-btn {
   background-color:#ec6969;
   border-radius: 10px;
   box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
   font-weight: bold;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  color: white;
 }
+
+.remove-btn {
+  background-color: #d32f2f;
+  border-radius: 10px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+  font-weight: bold;
+  border: none;
+  padding: 8px 16px;
+  cursor: pointer;
+  color: white;
+}
+
+.favorite-btn:hover, .remove-btn:hover {
+  opacity: 0.8;
+}
+
+.navigation-container {
+  text-align: center;
+  padding: 20px;
+}
+
+.back-btn button {
+  background-color: #2196F3;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.back-btn button:hover {
+  opacity: 0.8;
+}
+
+.search-container {
+  text-align: center;
+  padding: 20px;
+  background-color: white;
+  margin: 20px;
+  border-radius: 10px;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  text-align: center;
+  color: #333;
+  margin: 20px 0;
+}
+
 .pagination {
   display: flex;
   justify-content: center;
@@ -78,6 +157,15 @@ header {
   color: white;
 }
 
-#searchBtn:hover, #prevBtn:hover, #nextBtn:hover, #resetBtn:hover {
+#favoritesLink button {
+  background-color: #ff9800;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#searchBtn:hover, #prevBtn:hover, #nextBtn:hover, #resetBtn:hover, #favoritesLink button:hover {
   opacity: 0.8;
 }

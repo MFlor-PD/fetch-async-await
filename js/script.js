@@ -42,7 +42,7 @@ async function fetchPokemons() {
                 const detailsPok = await response2.json();
                 return {
                     name,
-                    imageUrl: detailsPok.sprites.front_default,
+                    imageUrl: detailsPok.sprites.other['official-artwork'].front_default,
                 };
             })
         );
@@ -89,6 +89,7 @@ async function fetchPokemons() {
 fetchPokemons();
 
 async function searchPokemon(pokemonName) {
+    
     try {
         const response = await fetch(`${baseSearchURL}/${pokemonName}`);
         if (!response.ok) {
@@ -96,13 +97,35 @@ async function searchPokemon(pokemonName) {
         }
         const data = await response.json();
         const { name, sprites } = data;
+        const imageUrl = sprites.other['official-artwork'].front_default;
 
         displayPokemon.innerHTML = `
             <div class="pokemon-card">
-                <div class="img"><img src="${sprites.front_default}" alt="${name}"/></div>
+                <div class="img"><img src="${imageUrl}" alt="${name}"/></div>
                 <div><h2 class="name">${name}</h2></div>
+                <div>
+                    <button class="favorite-btn" data-name="${name}">
+                        Añadir a favoritos
+                    </button>
+                </div>
             </div>
         `;
+
+        // Event listener para el botón de favoritos en la búsqueda
+        const favoriteButton = document.querySelector(".favorite-btn");
+        favoriteButton.addEventListener("click", () => {
+            const pokemonName = favoriteButton.dataset.name;
+            const isFavorite = localStorage.getItem(`poke-fav-${pokemonName}`);
+            if (isFavorite) {
+                localStorage.removeItem(`poke-fav-${pokemonName}`);
+                favoriteButton.classList.remove('favorited');
+                favoriteButton.textContent = 'Añadir a favoritos';
+            } else {
+                localStorage.setItem(`poke-fav-${pokemonName}`, 'true');
+                favoriteButton.classList.add('favorited');
+                favoriteButton.textContent = 'Eliminar de favoritos';
+            }
+        });
     } catch (error) {
         console.error('Error:', error);
         displayPokemon.innerHTML = 'Pokémon no encontrado';
